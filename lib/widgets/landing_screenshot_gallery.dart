@@ -23,6 +23,11 @@ class LandingScreenshotGallery extends StatelessWidget {
       label: 'Recomendaciones',
       icon: Icons.wine_bar_outlined,
     ),
+    _ScreenshotItem(
+      assetPath: 'assets/screenshots/choice.png',
+      label: 'Elección',
+      icon: Icons.touch_app_outlined,
+    ),
   ];
 
   @override
@@ -51,8 +56,8 @@ class LandingScreenshotGallery extends StatelessWidget {
         const SizedBox(height: AppSpacing.xxl),
         LayoutBuilder(
           builder: (context, constraints) {
-            final crossAxisCount = isDesktop ? 3 : (isTablet ? 2 : 1);
-            const spacing = AppSpacing.lg;
+            final crossAxisCount = isDesktop ? 4 : (isTablet ? 2 : 1);
+            const spacing = AppSpacing.md;
             final itemWidth =
                 (constraints.maxWidth - spacing * (crossAxisCount - 1)) /
                     crossAxisCount;
@@ -96,15 +101,35 @@ class _ScreenshotCard extends StatelessWidget {
 
   final _ScreenshotItem item;
 
+  static const _framePadding = 7.0;
+  static const _innerRadius = 12.0;
+
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        ClipRRect(
-          borderRadius: AppRadius.card,
-          child: AspectRatio(
-            aspectRatio: 9 / 16,
-            child: _ScreenshotImage(item: item),
+        DecoratedBox(
+          decoration: BoxDecoration(
+            color: AppColors.surface,
+            borderRadius: AppRadius.card,
+            border: Border.all(color: AppColors.borderLight),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.shadow(0.06),
+                blurRadius: 14,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(_framePadding),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(_innerRadius),
+              child: AspectRatio(
+                aspectRatio: 9 / 16,
+                child: _ScreenshotImage(item: item),
+              ),
+            ),
           ),
         ),
         const SizedBox(height: AppSpacing.sm),
@@ -157,7 +182,6 @@ class _ScreenshotPlaceholder extends StatelessWidget {
             AppColors.secondaryDark,
           ],
         ),
-        border: Border.all(color: AppColors.border),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
