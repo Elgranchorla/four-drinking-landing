@@ -79,24 +79,12 @@ jobs:
           name: landing-web-build
           path: build/web
 
-      - name: Authenticate to Google Cloud (service account)
-        id: gcp_auth
-        continue-on-error: true
-        uses: google-github-actions/auth@v2
-        with:
-          credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_DRINKINGAPP }}
-          project_id: drinkingapp-84ac5
-
-      - name: Set up Cloud SDK
-        if: steps.gcp_auth.outcome == 'success'
-        uses: google-github-actions/setup-gcloud@v2
-
       - name: Install Firebase CLI
         run: npm install -g firebase-tools
 
       - name: Deploy to Firebase Hosting
         env:
-          USE_SERVICE_ACCOUNT: ${{ steps.gcp_auth.outcome == 'success' }}
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_DRINKINGAPP }}
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
         run: |
           PROJECT_ID="drinkingapp-84ac5"
@@ -110,12 +98,42 @@ jobs:
 
           echo "Deploying landing to project ${PROJECT_ID}, hosting site ${HOSTING_SITE}"
 
-          if [ "$USE_SERVICE_ACCOUNT" = "true" ]; then
+          deploy_with_service_account() {
+            CREDENTIALS_FILE="${RUNNER_TEMP}/gcp.json"
+            printf '%s' "$FIREBASE_SERVICE_ACCOUNT" > "$CREDENTIALS_FILE"
+            export GOOGLE_APPLICATION_CREDENTIALS="$CREDENTIALS_FILE"
+
+            python3 - <<'PY'
+          import json
+          import os
+          import sys
+
+          path = os.environ["GOOGLE_APPLICATION_CREDENTIALS"]
+          with open(path, encoding="utf-8") as handle:
+              data = json.load(handle)
+
+          project_id = data.get("project_id")
+          client_email = data.get("client_email")
+          if not project_id or not client_email:
+              print("::error::Service account JSON is missing project_id or client_email.")
+              sys.exit(1)
+
+          print(f"Service account project: {project_id}")
+          print(f"Service account email: {client_email}")
+          PY
+
+            echo "Verifying Firebase project access..."
+            firebase projects:list --project "$PROJECT_ID" --non-interactive >/dev/null
+
             echo "Deploying with service account credentials..."
             firebase deploy \
               --only "hosting:${HOSTING_SITE}" \
               --project "$PROJECT_ID" \
               --non-interactive
+          }
+
+          if [ -n "$FIREBASE_SERVICE_ACCOUNT" ]; then
+            deploy_with_service_account
           elif [ -n "$FIREBASE_TOKEN" ]; then
             echo "Deploying with FIREBASE_TOKEN..."
             firebase deploy \
@@ -124,6 +142,6 @@ jobs:
               --token "$FIREBASE_TOKEN" \
               --non-interactive
           else
-            echo "::error::Missing deploy credentials. Configure FIREBASE_SERVICE_ACCOUNT_DRINKINGAPP (recommended) or FIREBASE_TOKEN in repository secrets."
+            echo "::error::Missing deploy credentials. Add FIREBASE_SERVICE_ACCOUNT_DRINKINGAPP to this repository (same JSON secret used in four_drinking_admin), or configure FIREBASE_TOKEN."
             exit 1
           fi
