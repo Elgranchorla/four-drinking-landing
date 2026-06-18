@@ -8,7 +8,7 @@ Proyecto separado de `four_drinking_app` (app de consumo) y `four_drinking_admin
 
 - Hero con logo y propuesta de valor
 - Galería de capturas (placeholders hasta añadir assets reales)
-- Formulario de waitlist → colección Firestore `waitlist`
+- Formulario de waitlist → colección Firestore `waitlist` (correo de bienvenida automático vía Cloud Function en `four_drinking_admin`)
 
 ## Requisitos
 
@@ -115,6 +115,14 @@ flutter build web --release --dart-define=USE_SCREENSHOT_ASSETS=true
 ```
 
 Hasta entonces la galería muestra placeholders sin solicitar assets inexistentes.
+
+## Correo de bienvenida (waitlist)
+
+Tras registrarse, el usuario recibe un email automático con asunto **«¡Bienvenido a la lista de espera de 4drinking!»**.
+
+La lógica vive en `four_drinking_admin` (`sendWaitlistWelcomeEmail`): se dispara al crear un documento en la colección `waitlist` con `source: landing`.
+
+Configura SMTP en el proyecto Firebase antes del deploy de functions (ver README de `four_drinking_admin`).
 
 ## Estructura
 
