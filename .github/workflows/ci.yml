@@ -82,9 +82,18 @@ jobs:
       - name: Install Firebase CLI
         run: npm install -g firebase-tools
 
-      - name: Deploy to Firebase Hosting
+      - name: Install Google auth library
+        run: pip install google-auth
+
+      - name: Prepare Firebase credentials
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_DRINKINGAPP }}
+          FIREBASE_SERVICE_ACCOUNT_BASE64: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_DRINKINGAPP_BASE64 }}
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ runner.temp }}/gcp.json
+        run: python3 scripts/prepare_firebase_credentials.py
+
+      - name: Deploy to Firebase Hosting
+        env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
         run: |
           PROJECT_ID="drinkingapp-84ac5"
@@ -98,43 +107,12 @@ jobs:
 
           echo "Deploying landing to project ${PROJECT_ID}, hosting site ${HOSTING_SITE}"
 
-          deploy_with_service_account() {
-            CREDENTIALS_FILE="${RUNNER_TEMP}/gcp.json"
-            printf '%s' "$FIREBASE_SERVICE_ACCOUNT" > "$CREDENTIALS_FILE"
-            export GOOGLE_APPLICATION_CREDENTIALS="$CREDENTIALS_FILE"
-
-            python3 - <<'PY'
-          import json
-          import os
-          import sys
-
-          path = os.environ["GOOGLE_APPLICATION_CREDENTIALS"]
-          with open(path, encoding="utf-8") as handle:
-              data = json.load(handle)
-
-          project_id = data.get("project_id")
-          client_email = data.get("client_email")
-          private_key = data.get("private_key", "")
-          if not project_id or not client_email:
-              print("::error::Service account JSON is missing project_id or client_email.")
-              sys.exit(1)
-          if "BEGIN PRIVATE KEY" not in private_key:
-              print("::error::Service account JSON has an invalid private_key. Re-copy the full JSON secret from Firebase Console.")
-              sys.exit(1)
-
-          print(f"Service account project: {project_id}")
-          print(f"Service account email: {client_email}")
-          PY
-
+          if [ -n "$GOOGLE_APPLICATION_CREDENTIALS" ] && [ -f "$GOOGLE_APPLICATION_CREDENTIALS" ]; then
             echo "Deploying with service account credentials..."
             firebase deploy \
               --only "hosting:${HOSTING_SITE}" \
               --project "$PROJECT_ID" \
               --non-interactive
-          }
-
-          if [ -n "$FIREBASE_SERVICE_ACCOUNT" ]; then
-            deploy_with_service_account
           elif [ -n "$FIREBASE_TOKEN" ]; then
             echo "Deploying with FIREBASE_TOKEN..."
             firebase deploy \
@@ -143,6 +121,6 @@ jobs:
               --token "$FIREBASE_TOKEN" \
               --non-interactive
           else
-            echo "::error::Missing deploy credentials. Add FIREBASE_SERVICE_ACCOUNT_DRINKINGAPP to this repository (same JSON secret used in four_drinking_admin), or configure FIREBASE_TOKEN."
+            echo "::error::Missing deploy credentials. Configure FIREBASE_SERVICE_ACCOUNT_DRINKINGAPP_BASE64 (recommended), FIREBASE_SERVICE_ACCOUNT_DRINKINGAPP, or FIREBASE_TOKEN."
             exit 1
           fi

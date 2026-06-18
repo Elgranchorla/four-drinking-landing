@@ -43,12 +43,21 @@ El workflow [`.github/workflows/ci.yml`](.github/workflows/ci.yml) se ejecuta en
 
 | Secret | Uso |
 |--------|-----|
-| `FIREBASE_SERVICE_ACCOUNT_DRINKINGAPP` | **Obligatorio** en este repo. Copia el mismo JSON que en `four_drinking_admin` (Settings → Secrets → Actions). |
+| `FIREBASE_SERVICE_ACCOUNT_DRINKINGAPP_BASE64` | **Recomendado.** JSON de la service account codificado en base64 (evita errores al pegar la clave privada). |
+| `FIREBASE_SERVICE_ACCOUNT_DRINKINGAPP` | Alternativa: JSON en bruto (mismo valor que en `four_drinking_admin`). |
 | `FIREBASE_TOKEN` | Alternativa: token de `firebase login:ci`. |
+
+Para generar el secret en base64 (macOS/Linux):
+
+```bash
+base64 -i drinkingapp-84ac5-firebase-adminsdk.json | tr -d '\n' | pbcopy
+```
+
+Pega el resultado en GitHub → `four-drinking-landing` → Settings → Secrets → `FIREBASE_SERVICE_ACCOUNT_DRINKINGAPP_BASE64`.
 
 No uses `FIREBASE_PROJECT_ID` en este repo: el proyecto (`drinkingapp-84ac5`) y el sitio (`four-drinking-landing`) están fijados en el workflow y en `firebase.json`.
 
-Si el deploy falla con *Failed to get Firebase project*, revisa que el secret exista en **este** repositorio (`four-drinking-landing`), no solo en el del admin, y que el JSON sea válido (incluye `project_id` y `private_key`).
+Si el deploy falla con *Failed to get Firebase project*, el JSON del secret está mal copiado o la service account no tiene permisos de Firebase Admin. Regenera la clave en Firebase Console o usa `FIREBASE_TOKEN`.
 
 ### Dominio 4drinking.com
 
