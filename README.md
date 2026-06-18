@@ -45,9 +45,8 @@ El workflow [`.github/workflows/ci.yml`](.github/workflows/ci.yml) se ejecuta en
 |--------|-----|
 | `FIREBASE_SERVICE_ACCOUNT_DRINKINGAPP` | Recomendado. JSON de la service account con permiso de deploy. |
 | `FIREBASE_TOKEN` | Alternativa: token de `firebase login:ci`. |
-| `FIREBASE_PROJECT_ID` | Opcional. Por defecto `drinkingapp-84ac5`. |
 
-**Variable de repositorio** (opcional): no hace falta; el sitio está fijado en `firebase.json`.
+No uses `FIREBASE_PROJECT_ID` en este repo: el proyecto (`drinkingapp-84ac5`) y el sitio (`four-drinking-landing`) están fijados en el workflow y en `firebase.json`.
 
 ### Dominio 4drinking.com
 

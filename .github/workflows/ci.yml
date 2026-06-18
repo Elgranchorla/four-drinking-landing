@@ -98,9 +98,8 @@ jobs:
         env:
           USE_SERVICE_ACCOUNT: ${{ steps.gcp_auth.outcome == 'success' }}
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-          FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
         run: |
-          PROJECT_ID="${FIREBASE_PROJECT_ID:-drinkingapp-84ac5}"
+          PROJECT_ID="drinkingapp-84ac5"
           HOSTING_SITE="four-drinking-landing"
           export GOOGLE_CLOUD_QUOTA_PROJECT="$PROJECT_ID"
 
@@ -109,7 +108,7 @@ jobs:
             exit 1
           fi
 
-          echo "Deploying landing to hosting site: ${HOSTING_SITE}"
+          echo "Deploying landing to project ${PROJECT_ID}, hosting site ${HOSTING_SITE}"
 
           if [ "$USE_SERVICE_ACCOUNT" = "true" ]; then
             echo "Deploying with service account credentials..."
