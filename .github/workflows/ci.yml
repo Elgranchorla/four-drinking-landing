@@ -114,16 +114,17 @@ jobs:
 
           project_id = data.get("project_id")
           client_email = data.get("client_email")
+          private_key = data.get("private_key", "")
           if not project_id or not client_email:
               print("::error::Service account JSON is missing project_id or client_email.")
+              sys.exit(1)
+          if "BEGIN PRIVATE KEY" not in private_key:
+              print("::error::Service account JSON has an invalid private_key. Re-copy the full JSON secret from Firebase Console.")
               sys.exit(1)
 
           print(f"Service account project: {project_id}")
           print(f"Service account email: {client_email}")
           PY
-
-            echo "Verifying Firebase project access..."
-            firebase projects:list --project "$PROJECT_ID" --non-interactive >/dev/null
 
             echo "Deploying with service account credentials..."
             firebase deploy \
