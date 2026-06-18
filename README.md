@@ -47,17 +47,20 @@ El workflow [`.github/workflows/ci.yml`](.github/workflows/ci.yml) se ejecuta en
 | `FIREBASE_TOKEN` | Alternativa: token de `firebase login:ci`. |
 | `FIREBASE_PROJECT_ID` | Opcional. Por defecto `drinkingapp-84ac5`. |
 
-**Variable de repositorio** (opcional):
-
-| Variable | Valor por defecto |
-|----------|-------------------|
-| `FIREBASE_HOSTING_SITE` | `four-drinking-landing` |
+**Variable de repositorio** (opcional): no hace falta; el sitio está fijado en `firebase.json`.
 
 ### Dominio 4drinking.com
 
-La landing se publica en un **sitio de Hosting dedicado** (`four-drinking-landing`), separado del panel admin.
+Cada app tiene su **sitio de Hosting** y su dominio:
 
-1. Crear el sitio (una sola vez):
+| App | Sitio Firebase | Dominio |
+|-----|----------------|---------|
+| Landing | `four-drinking-landing` | `4drinking.com` |
+| Admin | `drinkingapp-84ac5` | `admin.4drinking.com` |
+
+La landing **nunca** debe desplegarse al sitio por defecto (`drinkingapp-84ac5`), porque ahí vive el admin.
+
+1. Crear el sitio (una sola vez, ya hecho):
 
    ```bash
    firebase hosting:sites:create four-drinking-landing --project drinkingapp-84ac5
@@ -74,9 +77,9 @@ Tras el primer deploy desde CI, el dominio servirá el build de la landing.
 Admin y Landing usan el mismo proyecto Firebase (`drinkingapp-84ac5`) pero **sitios de Hosting distintos**:
 
 - **Landing** → `four-drinking-landing` → `4drinking.com`
-- **Admin** → sitio por defecto `drinkingapp-84ac5` → URL `.web.app` del admin
+- **Admin** → `drinkingapp-84ac5` → `admin.4drinking.com`
 
-Así los deploys de cada repositorio no se pisan entre sí.
+Los workflows de CI despliegan cada uno solo a su sitio (`hosting:four-drinking-landing` y `hosting:drinkingapp-84ac5`).
 
 ## Configuración opcional
 

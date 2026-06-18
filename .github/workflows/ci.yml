@@ -44,6 +44,7 @@ jobs:
         run: |
           test -f firebase.json
           test -f .firebaserc
+          grep -q '"site": "four-drinking-landing"' firebase.json
 
       - name: Upload web build artifact
         if: always()
@@ -98,11 +99,15 @@ jobs:
           USE_SERVICE_ACCOUNT: ${{ steps.gcp_auth.outcome == 'success' }}
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
           FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
-          FIREBASE_HOSTING_SITE: ${{ vars.FIREBASE_HOSTING_SITE }}
         run: |
           PROJECT_ID="${FIREBASE_PROJECT_ID:-drinkingapp-84ac5}"
-          HOSTING_SITE="${FIREBASE_HOSTING_SITE:-four-drinking-landing}"
+          HOSTING_SITE="four-drinking-landing"
           export GOOGLE_CLOUD_QUOTA_PROJECT="$PROJECT_ID"
+
+          if ! grep -q "\"site\": \"${HOSTING_SITE}\"" firebase.json; then
+            echo "::error::firebase.json must target hosting site ${HOSTING_SITE}."
+            exit 1
+          fi
 
           echo "Deploying landing to hosting site: ${HOSTING_SITE}"
 
