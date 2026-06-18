@@ -1,5 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../config/landing_config.dart';
+
+class PrivacyNotAcceptedException implements Exception {
+  const PrivacyNotAcceptedException();
+
+  @override
+  String toString() =>
+      'Privacy policy must be accepted before joining the waitlist';
+}
+
 class WaitlistService {
   WaitlistService({FirebaseFirestore? firestore})
       : _firestore = firestore ?? FirebaseFirestore.instance;
@@ -15,7 +25,13 @@ class WaitlistService {
   Future<void> joinWaitlist({
     required String email,
     String? name,
+    required bool privacyAccepted,
+    required bool marketingConsent,
   }) async {
+    if (!privacyAccepted) {
+      throw const PrivacyNotAcceptedException();
+    }
+
     final trimmedEmail = email.trim().toLowerCase();
     final trimmedName = name?.trim();
 
@@ -24,6 +40,14 @@ class WaitlistService {
       'name': trimmedName == null || trimmedName.isEmpty ? null : trimmedName,
       'createdAt': FieldValue.serverTimestamp(),
       'source': sourceLanding,
+      'privacyAccepted': true,
+      'privacyAcceptedAt': FieldValue.serverTimestamp(),
+      'privacyPolicyVersion': LandingConfig.privacyPolicyVersion,
+      'marketingConsent': marketingConsent,
+      'marketingConsentAt':
+          marketingConsent ? FieldValue.serverTimestamp() : null,
+      'termsVersion': LandingConfig.termsVersion,
+      'cookiePolicyVersion': LandingConfig.cookiePolicyVersion,
     });
   }
 }

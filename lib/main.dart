@@ -2,7 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 import 'firebase_options.dart';
-import 'screens/landing_screen.dart';
+import 'router.dart';
 import 'theme/app_theme.dart';
 
 Future<void> main() async {
@@ -20,12 +20,12 @@ class LandingApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: '4drinking',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light(),
       locale: const Locale('es'),
-      home: const LandingScreen(),
+      routerConfig: createRouter(),
     );
   }
 }

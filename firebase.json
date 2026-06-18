@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "four-drinking-landing",
     "public": "build/web",
     "ignore": [
       "firebase.json",

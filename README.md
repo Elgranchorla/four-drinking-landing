@@ -28,12 +28,55 @@ flutter run -d chrome
 
 ```bash
 flutter build web --release
-firebase deploy --only hosting --project drinkingapp-84ac5
+firebase deploy --only hosting:four-drinking-landing --project drinkingapp-84ac5
 ```
+
+### CI/CD (GitHub Actions)
+
+El workflow [`.github/workflows/ci.yml`](.github/workflows/ci.yml) se ejecuta en:
+
+- **Pull requests / merge requests**: análisis, tests y build (sin deploy).
+- **Push a `main`** (p. ej. al fusionar un MR): lo anterior + deploy a Firebase Hosting.
+- **`workflow_dispatch`**: ejecución manual con deploy.
+
+**Secrets del repositorio** (mismos que `four_drinking_admin`):
+
+| Secret | Uso |
+|--------|-----|
+| `FIREBASE_SERVICE_ACCOUNT_DRINKINGAPP` | Recomendado. JSON de la service account con permiso de deploy. |
+| `FIREBASE_TOKEN` | Alternativa: token de `firebase login:ci`. |
+| `FIREBASE_PROJECT_ID` | Opcional. Por defecto `drinkingapp-84ac5`. |
+
+**Variable de repositorio** (opcional):
+
+| Variable | Valor por defecto |
+|----------|-------------------|
+| `FIREBASE_HOSTING_SITE` | `four-drinking-landing` |
+
+### Dominio 4drinking.com
+
+La landing se publica en un **sitio de Hosting dedicado** (`four-drinking-landing`), separado del panel admin.
+
+1. Crear el sitio (una sola vez):
+
+   ```bash
+   firebase hosting:sites:create four-drinking-landing --project drinkingapp-84ac5
+   ```
+
+2. En [Firebase Console → Hosting](https://console.firebase.google.com/project/drinkingapp-84ac5/hosting), abrir el sitio `four-drinking-landing` y añadir el dominio personalizado `4drinking.com` (y `www.4drinking.com` si aplica).
+
+3. Configurar los registros DNS que indique Firebase (normalmente `A`/`AAAA` o `CNAME`).
+
+Tras el primer deploy desde CI, el dominio servirá el build de la landing.
 
 ### Hosting compartido con Admin
 
-Si Admin y Landing usan el mismo proyecto Firebase, configura **dos sitios de Hosting** en la consola de Firebase y asigna cada deploy a su sitio (por ejemplo, landing en el sitio por defecto y admin en un sitio secundario).
+Admin y Landing usan el mismo proyecto Firebase (`drinkingapp-84ac5`) pero **sitios de Hosting distintos**:
+
+- **Landing** → `four-drinking-landing` → `4drinking.com`
+- **Admin** → sitio por defecto `drinkingapp-84ac5` → URL `.web.app` del admin
+
+Así los deploys de cada repositorio no se pisan entre sí.
 
 ## Configuración opcional
 
@@ -50,6 +93,15 @@ Añade imágenes en `assets/screenshots/`:
 - `home.png`
 - `questions.png`
 - `recommendations.png`
+- `choice.png`
+
+Luego activa su carga en build:
+
+```bash
+flutter build web --release --dart-define=USE_SCREENSHOT_ASSETS=true
+```
+
+Hasta entonces la galería muestra placeholders sin solicitar assets inexistentes.
 
 ## Estructura
 

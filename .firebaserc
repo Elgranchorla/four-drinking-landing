@@ -1,5 +1,14 @@
 {
   "projects": {
     "default": "drinkingapp-84ac5"
+  },
+  "targets": {
+    "drinkingapp-84ac5": {
+      "hosting": {
+        "landing": [
+          "four-drinking-landing"
+        ]
+      }
+    }
   }
 }
