@@ -108,6 +108,11 @@ class _ScreenshotCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        Text(
+          item.label,
+          style: AppTypography.title.copyWith(color: AppColors.primaryDark),
+        ),
+        const SizedBox(height: AppSpacing.sm),
         DecoratedBox(
           decoration: BoxDecoration(
             color: AppColors.surface,
@@ -131,11 +136,6 @@ class _ScreenshotCard extends StatelessWidget {
               ),
             ),
           ),
-        ),
-        const SizedBox(height: AppSpacing.sm),
-        Text(
-          item.label,
-          style: AppTypography.title.copyWith(color: AppColors.primaryDark),
         ),
       ],
     );
