@@ -1,0 +1,65 @@
+# 4drinking Landing - Cursor Rules
+
+You are assisting with the 4drinking public landing page.
+
+This project is a Flutter Web site deployed to Firebase Hosting. It is separate from `four_drinking_app` (consumer app) and `four_drinking_admin` (admin panel + Firebase backend).
+
+Scope:
+- Marketing landing (`LandingScreen`)
+- Legal document pages
+- Waitlist form → Firestore `waitlist` (rules and Functions in `four_drinking_admin`)
+
+Backend:
+- Firebase Hosting
+- Firestore client (waitlist writes only)
+- Shared project: `drinkingapp-84ac5`
+
+## Language
+
+Always answer the developer in Spanish unless explicitly requested otherwise.
+
+Technical identifiers, code, methods and comments should remain in English.
+
+## General coding principles
+
+- Prefer minimal, focused changes.
+- Preserve existing behavior unless explicitly requested.
+- Handle nulls safely.
+- Keep the landing thin — no business logic that belongs in the app or admin.
+
+## Flutter Web
+
+- Web-first; verify compatibility before new packages.
+- Avoid `dart:io`.
+- Responsive layouts for desktop and mobile browsers.
+
+## Firebase
+
+- **Do not** edit `firestore.rules` here — update `four_drinking_admin/firestore.rules` and deploy from admin repo.
+- Waitlist payload must stay aligned with `validWaitlistCreate()` in rules.
+
+## Security & scalability (every new feature)
+
+Mandatory checklists — see `.cursor/rules/`:
+
+- **Security:** `security-new-features.mdc` (public surface, waitlist, consent, no secrets)
+- **Scale (~1M users):** `scalability-firebase.mdc` (no reads on load, single write per signup)
+
+## Output style
+
+- Explain briefly in Spanish.
+- Provide exact file paths.
+- Prefer minimal diffs.
+
+Useful commands:
+- flutter pub get
+- flutter analyze
+- flutter test
+- flutter build web --release
+
+## Project priorities
+
+1. Fast, static public landing
+2. **Security and scalability by default** (rules above)
+3. Reliable waitlist signup + legal compliance
+4. Maintainable Web build and CI deploy

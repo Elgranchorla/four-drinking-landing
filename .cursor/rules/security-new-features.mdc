@@ -1,0 +1,41 @@
+---
+description: Security checklist for public landing (waitlist, Firestore, legal consent)
+alwaysApply: true
+---
+
+# Security — landing (public, unauthenticated)
+
+The landing is **fully public**. Only minimal, validated writes to Firestore are allowed. Rules live in **`four_drinking_admin/firestore.rules`** — coordinate changes there.
+
+## Waitlist & Firestore writes
+
+- Only write to collections explicitly allowed by rules (currently `waitlist` via `validWaitlistCreate()`).
+- Payload must match rules: `email`, `createdAt` (server timestamp), `source: 'landing'`, optional `name` (max length per rules).
+- Persist legal consent fields (`privacyAccepted`, versions, timestamps) consistently with `WaitlistService` — do not add fields rules reject.
+- **Never** write from landing to `users`, admin collections, or authenticated-only paths.
+- Do not embed Firebase Admin SDK or secrets in this repo — client SDK only.
+
+## Input validation
+
+- Validate email client-side (`isValidWaitlistEmail`) **and** rely on rules server-side — never trust browser input.
+- Require explicit privacy acceptance before submit (`WaitlistForm` pattern).
+- Generic error messages to users; no Firestore/security error details in UI.
+
+## Legal & RGPD
+
+- Store `privacyPolicyVersion`, `termsVersion`, `cookiePolicyVersion` from `LandingConfig` on waitlist docs.
+- Marketing consent: optional, with timestamp when true.
+- Link to legal pages on-site (`/privacidad`, etc.) — do not hotlink arbitrary URLs.
+
+## Dependencies & hosting
+
+- Static Flutter Web + Firestore client only — no Cloud Functions in this repo.
+- Verify new packages are Web-safe; avoid `dart:io`.
+- `firebase.json`: hosting only — do not add broad Firestore/Functions deploy config here.
+
+## Definition of done (security)
+
+- [ ] New Firestore writes have matching rules + tests in `four_drinking_admin`
+- [ ] No auth secrets or admin capabilities in landing code
+- [ ] Consent and version fields aligned with legal config
+- [ ] User-facing errors do not leak permission/index details

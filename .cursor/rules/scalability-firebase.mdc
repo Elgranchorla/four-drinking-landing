@@ -1,0 +1,42 @@
+---
+description: Scalability target (~1M users) for landing traffic and waitlist writes
+alwaysApply: true
+---
+
+# Scalability — landing (~1M users)
+
+The landing must handle **high traffic spikes** (campaigns, beta invites) with minimal Firestore cost per visitor.
+
+## Traffic profile
+
+- Most visitors: **zero Firestore reads** — static Flutter Web assets from Hosting CDN.
+- One write per successful waitlist signup — design for **1M+ waitlist docs** over time (admin lists paginate in `four_drinking_admin`).
+
+## Firestore usage (hard rules)
+
+- **No** Firestore listeners on the landing — use one-shot `add()` on submit only.
+- **No** unauthenticated reads from landing (waitlist is admin-read-only in rules).
+- Do not add features that poll Firestore on page load or scroll.
+- Keep waitlist documents small; avoid large blobs or unbounded metadata maps.
+
+## Waitlist writes
+
+- Use `FieldValue.serverTimestamp()` for `createdAt` (required by rules).
+- Do not dedupe client-side only — if duplicate emails matter, handle in admin/Functions later; do not add expensive pre-read queries from public client unless rules allow and scale is justified.
+
+## Assets & build
+
+- Optimize images/SVGs for Web; lazy-load gallery if it grows.
+- Keep `main.dart.js` lean — landing should stay a thin shell.
+
+## Cross-repo impact
+
+- Waitlist growth triggers `sendWaitlistWelcomeEmail` (admin Functions) — new fields must not break the trigger.
+- Index needs for admin waitlist UI belong in `four_drinking_admin/firestore.indexes.json`.
+
+## Definition of done (scale)
+
+- [ ] No new Firestore reads on page load
+- [ ] Writes are single-doc creates, bounded payload size
+- [ ] Admin repo informed if waitlist schema or volume assumptions change
+- [ ] Rough note: writes per conversion (target: 1 write per signup)
