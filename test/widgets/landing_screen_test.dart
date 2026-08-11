@@ -22,15 +22,19 @@ void main() {
       await tester.pumpAndSettle();
     }
 
-    testWidgets('muestra hero y formulario', (tester) async {
+    testWidgets('muestra hero, pasos y formulario', (tester) async {
       await pumpLanding(tester);
 
       expect(find.text(LandingScreen.headline), findsOneWidget);
       expect(find.text(LandingScreen.subtitle), findsOneWidget);
+      expect(find.text('¿Cómo funciona?'), findsOneWidget);
+      expect(find.text('Responde unas pocas preguntas'), findsOneWidget);
+      expect(find.text('Recibe recomendaciones'), findsOneWidget);
+      expect(find.text('Elige tu vino y disfrútalo'), findsOneWidget);
 
       await scrollToWaitlistForm(tester);
 
-      expect(find.text('Únete a la lista de espera'), findsOneWidget);
+      expect(find.text('Únete a la lista de espera'), findsWidgets);
       expect(find.byType(TextFormField), findsNWidgets(2));
     });
 

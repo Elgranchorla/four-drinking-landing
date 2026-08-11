@@ -6,25 +6,45 @@ import '../theme/app_colors.dart';
 import '../theme/app_spacing.dart';
 import '../theme/app_typography.dart';
 import '../widgets/app_button.dart';
-import '../widgets/landing_logo.dart';
-import '../widgets/landing_screenshot_gallery.dart';
+import '../widgets/landing_how_it_works.dart';
+import '../widgets/landing_immersive_hero.dart';
 import '../widgets/waitlist_form.dart';
 
-class LandingScreen extends StatelessWidget {
+class LandingScreen extends StatefulWidget {
   const LandingScreen({super.key});
 
   static const String headline =
-      'Encuentra el vino perfecto para cada ocasión';
+      'Encuentra el vino ideal para tu momento';
   static const String subtitle =
-      '4drinking te ayuda a elegir el vino ideal según tus gustos, el momento, el presupuesto y el maridaje.';
+      'Responde unas pocas preguntas y recibe recomendaciones adaptadas a tus gustos.';
+  static const String ctaLabel = 'Únete a la lista de espera';
 
-  static const double _maxContentWidth = 960;
+  static const double _maxContentWidth = 720;
+
+  @override
+  State<LandingScreen> createState() => _LandingScreenState();
+}
+
+class _LandingScreenState extends State<LandingScreen> {
+  final _waitlistKey = GlobalKey();
 
   Future<void> _openAppUrl() async {
     final uri = Uri.tryParse(LandingConfig.appUrl.trim());
     if (uri == null) return;
 
     await launchUrl(uri, mode: LaunchMode.externalApplication);
+  }
+
+  Future<void> _scrollToWaitlist() async {
+    final context = _waitlistKey.currentContext;
+    if (context == null) return;
+
+    await Scrollable.ensureVisible(
+      context,
+      duration: const Duration(milliseconds: 520),
+      curve: Curves.easeOutCubic,
+      alignment: 0.08,
+    );
   }
 
   @override
@@ -34,53 +54,23 @@ class LandingScreen extends StatelessWidget {
     final horizontalPadding = isDesktop ? AppSpacing.xxxl : AppSpacing.xl;
 
     return Scaffold(
+      backgroundColor: AppColors.surface,
       body: CustomScrollView(
         slivers: [
           SliverToBoxAdapter(
-            child: GradientHeader(
-              height: isDesktop ? 320 : 260,
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    LandingLogo(
-                      height: isDesktop ? 56 : 44,
-                      color: AppColors.onInverse,
-                    ),
-                    SizedBox(height: isDesktop ? AppSpacing.xxl : AppSpacing.xl),
-                    Text(
-                      headline,
-                      textAlign: TextAlign.center,
-                      style: (isDesktop
-                              ? AppTypography.displayLarge
-                              : AppTypography.headingLarge)
-                          .copyWith(
-                        color: AppColors.onInverse,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                    const SizedBox(height: AppSpacing.md),
-                    ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 640),
-                      child: Text(
-                        subtitle,
-                        textAlign: TextAlign.center,
-                        style: AppTypography.body.copyWith(
-                          color: AppColors.onInverse.withValues(alpha: 0.92),
-                          height: 1.5,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+            child: LandingImmersiveHero(
+              headline: LandingScreen.headline,
+              subtitle: LandingScreen.subtitle,
+              ctaLabel: LandingScreen.ctaLabel,
+              onCtaPressed: _scrollToWaitlist,
             ),
           ),
           SliverToBoxAdapter(
             child: Center(
               child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: _maxContentWidth),
+                constraints: const BoxConstraints(
+                  maxWidth: LandingScreen._maxContentWidth,
+                ),
                 child: Padding(
                   padding: EdgeInsets.fromLTRB(
                     horizontalPadding,
@@ -89,16 +79,21 @@ class LandingScreen extends StatelessWidget {
                     AppSpacing.massive,
                   ),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      const LandingScreenshotGallery(),
+                      const LandingHowItWorks(),
                       SizedBox(
-                        height: isDesktop ? AppSpacing.massive : AppSpacing.xxxl,
+                        height:
+                            isDesktop ? AppSpacing.massive : AppSpacing.xxxl,
                       ),
-                      AppSurfaceCard(
-                        padding: EdgeInsets.all(
-                          isDesktop ? AppSpacing.xxl : AppSpacing.xl,
+                      KeyedSubtree(
+                        key: _waitlistKey,
+                        child: AppSurfaceCard(
+                          padding: EdgeInsets.all(
+                            isDesktop ? AppSpacing.xxl : AppSpacing.xl,
+                          ),
+                          child: const WaitlistForm(),
                         ),
-                        child: const WaitlistForm(),
                       ),
                       if (LandingConfig.hasAppUrl) ...[
                         const SizedBox(height: AppSpacing.xxl),
@@ -116,6 +111,7 @@ class LandingScreen extends StatelessWidget {
                       const SizedBox(height: AppSpacing.md),
                       Text(
                         '© ${DateTime.now().year} 4drinking',
+                        textAlign: TextAlign.center,
                         style: AppTypography.caption,
                       ),
                     ],
