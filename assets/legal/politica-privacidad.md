@@ -1,6 +1,6 @@
 # Política de Privacidad de 4drinking
 
-Última actualización: Junio de 2026
+Última actualización: Julio de 2026
 
 ---
 
@@ -40,6 +40,40 @@ Dependiendo del uso que realices de la aplicación, podremos recopilar las sigui
 - Año de nacimiento.
 - Ubicación indicada por el usuario.
 - Imagen de avatar (si el usuario decide utilizarla).
+
+## Datos obtenidos de Google (Inicio de sesión con Google)
+
+Si eliges **Continuar con Google** en la aplicación móvil 4drinking, accedemos a determinados datos de tu cuenta de Google únicamente para autenticarte y crear o vincular tu cuenta en 4drinking. Esto se realiza mediante los servicios de autenticación de Google y Firebase Authentication.
+
+### Tipos de datos de Google a los que accedemos
+
+- **Dirección de correo electrónico** asociada a tu cuenta de Google.
+- **Nombre visible** (display name) de tu perfil de Google, cuando Google lo proporciona.
+- **Identificador de usuario de Google** (incluido en el token de autenticación), utilizado de forma transitoria para verificar tu identidad y vincularla con tu cuenta en Firebase.
+
+No solicitamos ni accedemos a otros datos de Google (por ejemplo, contactos, Google Drive, Gmail, Calendar, ubicación de Google ni fotos de perfil de Google). La aplicación no lee tu libreta de contactos ni otros servicios de Google Workspace.
+
+### Cómo usamos los datos de Google
+
+- **Autenticación e inicio de sesión:** verificar tu identidad y permitirte acceder a la aplicación sin crear una contraseña propia.
+- **Creación y gestión de cuenta:** crear tu perfil de usuario en 4drinking (email, nombre visible y UID) o iniciar sesión si ya tienes cuenta.
+- **Personalización básica del perfil:** si Google proporciona un nombre visible, podemos usarlo como nombre mostrado en la app; el usuario puede modificarlo después en su perfil.
+
+Los datos de Google **no** se utilizan para publicidad de terceros, venta de datos, elaboración de perfiles comerciales ajenos al servicio ni entrenamiento de modelos de inteligencia artificial con datos de usuario de Google.
+
+### Almacenamiento, conservación y eliminación
+
+- El **token de identidad de Google** (ID token) se usa de forma **transitoria** durante el proceso de inicio de sesión y **no** se almacena de forma persistente en nuestros sistemas.
+- El **email** y el **nombre visible** derivados del inicio de sesión con Google se almacenan en **Cloud Firestore** (Firebase), dentro del documento de perfil del usuario, mientras la cuenta permanezca activa.
+- El vínculo con Google se gestiona a través de **Firebase Authentication** (Google actúa como proveedor de identidad).
+
+Puedes **eliminar tu cuenta** desde la aplicación (Perfil → Privacidad y datos → Eliminar cuenta). Esto suprime los datos personales asociados a tu perfil, incluidos los obtenidos mediante Google, salvo conservaciones exigidas por ley o necesarias para la seguridad del servicio.
+
+### Compartición de datos de Google
+
+No vendemos ni alquilamos datos de usuario de Google. Solo compartimos los datos estrictamente necesarios con **Google Firebase** (Authentication, Firestore y servicios relacionados) como **encargado del tratamiento** para prestar el servicio de autenticación y almacenamiento seguro. Firebase opera conforme a sus propias políticas y acuerdos de protección de datos.
+
+Para revocar el acceso de 4drinking a tu cuenta de Google, puedes hacerlo desde la [configuración de seguridad de tu cuenta de Google](https://myaccount.google.com/permissions) y, además, eliminar tu cuenta en la aplicación.
 
 ## Datos de uso de la aplicación
 

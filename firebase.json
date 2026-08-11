@@ -7,6 +7,23 @@
       "**/.*",
       "**/node_modules/**"
     ],
+    "redirects": [
+      {
+        "source": "/privacy",
+        "destination": "/privacidad",
+        "type": 301
+      },
+      {
+        "source": "/terms",
+        "destination": "/terminos",
+        "type": 301
+      },
+      {
+        "source": "/legal",
+        "destination": "/aviso-legal",
+        "type": 301
+      }
+    ],
     "rewrites": [
       {
         "source": "**",
