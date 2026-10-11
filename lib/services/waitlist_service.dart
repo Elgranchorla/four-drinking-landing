@@ -35,7 +35,8 @@ class WaitlistService {
     final trimmedEmail = email.trim().toLowerCase();
     final trimmedName = name?.trim();
 
-    await _collection.add({
+    // Doc id == email prevents duplicate spam rows (rules enforce the match).
+    await _collection.doc(trimmedEmail).set({
       'email': trimmedEmail,
       'name': trimmedName == null || trimmedName.isEmpty ? null : trimmedName,
       'createdAt': FieldValue.serverTimestamp(),
