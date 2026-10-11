@@ -28,12 +28,14 @@ class LandingScreen extends StatefulWidget {
 class _LandingScreenState extends State<LandingScreen> {
   final _waitlistKey = GlobalKey();
 
-  Future<void> _openAppUrl() async {
-    final uri = Uri.tryParse(LandingConfig.appUrl.trim());
+  Future<void> _openExternalUrl(String rawUrl) async {
+    final uri = Uri.tryParse(rawUrl.trim());
     if (uri == null) return;
 
     await launchUrl(uri, mode: LaunchMode.externalApplication);
   }
+
+  Future<void> _openAppUrl() => _openExternalUrl(LandingConfig.appUrl);
 
   Future<void> _scrollToWaitlist() async {
     final context = _waitlistKey.currentContext;
@@ -95,7 +97,35 @@ class _LandingScreenState extends State<LandingScreen> {
                           child: const WaitlistForm(),
                         ),
                       ),
-                      if (LandingConfig.hasAppUrl) ...[
+                      if (LandingConfig.hasStoreLinks) ...[
+                        const SizedBox(height: AppSpacing.xxl),
+                        Text(
+                          'Descarga 4drinking',
+                          textAlign: TextAlign.center,
+                          style: AppTypography.headingSmall.copyWith(
+                            color: AppColors.primaryDark,
+                          ),
+                        ),
+                        const SizedBox(height: AppSpacing.md),
+                        if (LandingConfig.hasAppStoreUrl)
+                          AppButton(
+                            label: 'App Store',
+                            onPressed: () => _openExternalUrl(
+                              LandingConfig.appStoreUrl,
+                            ),
+                          ),
+                        if (LandingConfig.hasAppStoreUrl &&
+                            LandingConfig.hasPlayStoreUrl)
+                          const SizedBox(height: AppSpacing.sm),
+                        if (LandingConfig.hasPlayStoreUrl)
+                          AppButton(
+                            label: 'Google Play',
+                            onPressed: () => _openExternalUrl(
+                              LandingConfig.playStoreUrl,
+                            ),
+                            variant: AppButtonVariant.secondary,
+                          ),
+                      ] else if (LandingConfig.hasAppUrl) ...[
                         const SizedBox(height: AppSpacing.xxl),
                         TextButton(
                           onPressed: _openAppUrl,

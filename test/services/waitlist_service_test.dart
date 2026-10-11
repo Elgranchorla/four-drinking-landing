@@ -37,6 +37,7 @@ void main() {
       final docs =
           await firestore.collection(WaitlistService.collectionName).get();
       expect(docs.docs, hasLength(1));
+      expect(docs.docs.first.id, 'test@example.com');
       return docs.docs.first.data();
     }
 

@@ -1,6 +1,6 @@
 # Política de Privacidad de 4drinking
 
-Última actualización: Julio de 2026
+Última actualización: Octubre de 2026
 
 ---
 
@@ -38,8 +38,17 @@ Dependiendo del uso que realices de la aplicación, podremos recopilar las sigui
 - Identificador único de usuario (UID).
 - Nombre visible o alias.
 - Año de nacimiento.
-- Ubicación indicada por el usuario.
+- Ubicación indicada por el usuario (ciudad o zona en el perfil).
 - Imagen de avatar (si el usuario decide utilizarla).
+
+## Ubicación del dispositivo (efímera)
+
+Si activas la preferencia **«Priorizar producto local»** y concedes el permiso de ubicación del dispositivo, la aplicación podrá obtener de forma **temporal** tu ubicación aproximada (ciudad o zona derivada por geolocalización) únicamente para priorizar vinos cuyo origen coincida con tu zona en las recomendaciones.
+
+- Las **coordenadas no se almacenan** en nuestros servidores ni en tu perfil.
+- El dato se usa solo durante el cálculo de esa recomendación y se descarta después.
+- Si deniegas el permiso, usamos la ubicación de texto que indiques en tu perfil (si la hay).
+- Puedes desactivar la preferencia en cualquier momento desde Preferencias; también puedes revocar el permiso de ubicación en el sistema del dispositivo.
 
 ## Datos obtenidos de Google (Inicio de sesión con Google)
 
@@ -109,6 +118,7 @@ Tratamos los datos personales para las siguientes finalidades:
 
 - Crear y gestionar cuentas de usuario.
 - Generar recomendaciones personalizadas.
+- Priorizar vinos de tu zona cuando actives «Priorizar producto local» (usando ubicación aproximada del dispositivo de forma efímera o la ubicación de tu perfil).
 - Mantener favoritos e historial.
 - Personalizar la experiencia de uso.
 
