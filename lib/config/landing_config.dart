@@ -7,14 +7,18 @@ abstract final class LandingConfig {
     defaultValue: '',
   );
 
-  /// Google Play store listing. Override with
+  /// Google Play listing. Leave empty until the public URL is published;
+  /// the Android download CTA stays visible but does not navigate.
+  /// Override with
   /// `--dart-define=PLAY_STORE_URL=https://play.google.com/store/apps/details?id=...`
   static const String playStoreUrl = String.fromEnvironment(
     'PLAY_STORE_URL',
     defaultValue: '',
   );
 
-  /// App Store listing. Override with
+  /// App Store listing. Leave empty until the public URL is published;
+  /// the iOS download CTA stays visible but does not navigate.
+  /// Override with
   /// `--dart-define=APP_STORE_URL=https://apps.apple.com/...`
   static const String appStoreUrl = String.fromEnvironment(
     'APP_STORE_URL',

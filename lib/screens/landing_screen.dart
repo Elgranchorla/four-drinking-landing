@@ -8,7 +8,7 @@ import '../theme/app_typography.dart';
 import '../widgets/app_button.dart';
 import '../widgets/landing_how_it_works.dart';
 import '../widgets/landing_immersive_hero.dart';
-import '../widgets/waitlist_form.dart';
+import '../widgets/store_download_section.dart';
 
 class LandingScreen extends StatefulWidget {
   const LandingScreen({super.key});
@@ -17,7 +17,7 @@ class LandingScreen extends StatefulWidget {
       'Encuentra el vino ideal para tu momento';
   static const String subtitle =
       'Responde unas pocas preguntas y recibe recomendaciones adaptadas a tus gustos.';
-  static const String ctaLabel = 'Únete a la lista de espera';
+  static const String ctaLabel = 'Descarga la app';
 
   static const double _maxContentWidth = 720;
 
@@ -26,7 +26,7 @@ class LandingScreen extends StatefulWidget {
 }
 
 class _LandingScreenState extends State<LandingScreen> {
-  final _waitlistKey = GlobalKey();
+  final _downloadKey = GlobalKey();
 
   Future<void> _openExternalUrl(String rawUrl) async {
     final uri = Uri.tryParse(rawUrl.trim());
@@ -37,8 +37,8 @@ class _LandingScreenState extends State<LandingScreen> {
 
   Future<void> _openAppUrl() => _openExternalUrl(LandingConfig.appUrl);
 
-  Future<void> _scrollToWaitlist() async {
-    final context = _waitlistKey.currentContext;
+  Future<void> _scrollToDownload() async {
+    final context = _downloadKey.currentContext;
     if (context == null) return;
 
     await Scrollable.ensureVisible(
@@ -64,7 +64,7 @@ class _LandingScreenState extends State<LandingScreen> {
               headline: LandingScreen.headline,
               subtitle: LandingScreen.subtitle,
               ctaLabel: LandingScreen.ctaLabel,
-              onCtaPressed: _scrollToWaitlist,
+              onCtaPressed: _scrollToDownload,
             ),
           ),
           SliverToBoxAdapter(
@@ -89,43 +89,15 @@ class _LandingScreenState extends State<LandingScreen> {
                             isDesktop ? AppSpacing.massive : AppSpacing.xxxl,
                       ),
                       KeyedSubtree(
-                        key: _waitlistKey,
+                        key: _downloadKey,
                         child: AppSurfaceCard(
                           padding: EdgeInsets.all(
                             isDesktop ? AppSpacing.xxl : AppSpacing.xl,
                           ),
-                          child: const WaitlistForm(),
+                          child: const StoreDownloadSection(),
                         ),
                       ),
-                      if (LandingConfig.hasStoreLinks) ...[
-                        const SizedBox(height: AppSpacing.xxl),
-                        Text(
-                          'Descarga 4drinking',
-                          textAlign: TextAlign.center,
-                          style: AppTypography.headingSmall.copyWith(
-                            color: AppColors.primaryDark,
-                          ),
-                        ),
-                        const SizedBox(height: AppSpacing.md),
-                        if (LandingConfig.hasAppStoreUrl)
-                          AppButton(
-                            label: 'App Store',
-                            onPressed: () => _openExternalUrl(
-                              LandingConfig.appStoreUrl,
-                            ),
-                          ),
-                        if (LandingConfig.hasAppStoreUrl &&
-                            LandingConfig.hasPlayStoreUrl)
-                          const SizedBox(height: AppSpacing.sm),
-                        if (LandingConfig.hasPlayStoreUrl)
-                          AppButton(
-                            label: 'Google Play',
-                            onPressed: () => _openExternalUrl(
-                              LandingConfig.playStoreUrl,
-                            ),
-                            variant: AppButtonVariant.secondary,
-                          ),
-                      ] else if (LandingConfig.hasAppUrl) ...[
+                      if (LandingConfig.hasAppUrl) ...[
                         const SizedBox(height: AppSpacing.xxl),
                         TextButton(
                           onPressed: _openAppUrl,
