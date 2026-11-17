@@ -16,13 +16,11 @@ abstract final class LandingConfig {
     defaultValue: '',
   );
 
-  /// App Store listing. Leave empty until the public URL is published;
-  /// the iOS download CTA stays visible but does not navigate.
-  /// Override with
+  /// App Store listing. Override at build time with
   /// `--dart-define=APP_STORE_URL=https://apps.apple.com/...`
   static const String appStoreUrl = String.fromEnvironment(
     'APP_STORE_URL',
-    defaultValue: '',
+    defaultValue: 'https://apps.apple.com/es/app/4drinking/id6780279794',
   );
 
   static bool get hasAppUrl => appUrl.trim().isNotEmpty;

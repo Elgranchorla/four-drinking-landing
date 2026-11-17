@@ -9,8 +9,7 @@ import 'landing_legal_links.dart';
 
 /// iOS and Android download CTAs.
 ///
-/// Store URLs stay empty until the public listings are published.
-/// A missing URL keeps the button visible and disabled.
+/// A missing store URL keeps that button visible and disabled.
 class StoreDownloadSection extends StatelessWidget {
   const StoreDownloadSection({
     super.key,
@@ -23,6 +22,21 @@ class StoreDownloadSection extends StatelessWidget {
   static const String subtitle = 'Disponible para iPhone y Android.';
   static const String pendingSubtitle =
       'Los enlaces de descarga estarán listos en los próximos días.';
+  static const String appStorePendingSubtitle =
+      'El enlace de App Store estará listo en los próximos días.';
+  static const String playStorePendingSubtitle =
+      'El enlace de Google Play estará listo en los próximos días.';
+
+  /// Copy shown while one or both store links are still unpublished.
+  static String? pendingMessage({
+    required bool appStoreReady,
+    required bool playStoreReady,
+  }) {
+    if (appStoreReady && playStoreReady) return null;
+    if (!appStoreReady && !playStoreReady) return pendingSubtitle;
+    if (!appStoreReady) return appStorePendingSubtitle;
+    return playStorePendingSubtitle;
+  }
   static const String appStoreLabel = 'App Store';
   static const String playStoreLabel = 'Google Play';
   static const String pendingLabel = 'Próximamente';
@@ -46,6 +60,10 @@ class StoreDownloadSection extends StatelessWidget {
     final isWide = width >= AppBreakpoints.tablet;
     final appStoreReady = _appStoreUrl.trim().isNotEmpty;
     final playStoreReady = _playStoreUrl.trim().isNotEmpty;
+    final pendingMessage = StoreDownloadSection.pendingMessage(
+      appStoreReady: appStoreReady,
+      playStoreReady: playStoreReady,
+    );
 
     final appStoreButton = _StoreDownloadButton(
       label: appStoreLabel,
@@ -82,10 +100,10 @@ class StoreDownloadSection extends StatelessWidget {
             color: AppColors.textSecondary,
           ),
         ),
-        if (!appStoreReady || !playStoreReady) ...[
+        if (pendingMessage != null) ...[
           const SizedBox(height: AppSpacing.xs),
           Text(
-            pendingSubtitle,
+            pendingMessage,
             textAlign: TextAlign.center,
             style: AppTypography.bodyMedium.copyWith(
               color: AppColors.textSecondary,

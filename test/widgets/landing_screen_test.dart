@@ -39,12 +39,17 @@ void main() {
       expect(find.text(StoreDownloadSection.title), findsWidgets);
       expect(find.text(StoreDownloadSection.appStoreLabel), findsOneWidget);
       expect(find.text(StoreDownloadSection.playStoreLabel), findsOneWidget);
-      expect(find.text(StoreDownloadSection.pendingSubtitle), findsOneWidget);
-      expect(find.text(StoreDownloadSection.pendingLabel), findsNWidgets(2));
+      expect(
+        find.text(
+          StoreDownloadSection.playStorePendingSubtitle,
+        ),
+        findsOneWidget,
+      );
+      expect(find.text(StoreDownloadSection.pendingLabel), findsOneWidget);
       expect(find.byType(TextFormField), findsNothing);
     });
 
-    testWidgets('mantiene los CTA desactivados mientras no hay enlaces', (
+    testWidgets('activa App Store y deja Google Play pendiente', (
       tester,
     ) async {
       await pumpLanding(tester);
@@ -60,7 +65,7 @@ void main() {
         ),
       );
 
-      expect(appStore.onPressed, isNull);
+      expect(appStore.onPressed, isNotNull);
       expect(playStore.onPressed, isNull);
     });
 

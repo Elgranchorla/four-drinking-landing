@@ -49,6 +49,10 @@ void main() {
         ),
       );
 
+      expect(
+        find.text(StoreDownloadSection.playStorePendingSubtitle),
+        findsOneWidget,
+      );
       expect(find.text(StoreDownloadSection.pendingLabel), findsOneWidget);
 
       await tester.tap(find.text(StoreDownloadSection.appStoreLabel));
