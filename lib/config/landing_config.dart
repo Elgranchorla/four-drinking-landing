@@ -7,13 +7,12 @@ abstract final class LandingConfig {
     defaultValue: '',
   );
 
-  /// Google Play listing. Leave empty until the public URL is published;
-  /// the Android download CTA stays visible but does not navigate.
-  /// Override with
+  /// Google Play listing. Override at build time with
   /// `--dart-define=PLAY_STORE_URL=https://play.google.com/store/apps/details?id=...`
   static const String playStoreUrl = String.fromEnvironment(
     'PLAY_STORE_URL',
-    defaultValue: '',
+    defaultValue:
+        'https://play.google.com/store/apps/details?id=com.juanantonioquesada.fourdrinkingapp',
   );
 
   /// App Store listing. Override at build time with

@@ -39,17 +39,12 @@ void main() {
       expect(find.text(StoreDownloadSection.title), findsWidgets);
       expect(find.text(StoreDownloadSection.appStoreLabel), findsOneWidget);
       expect(find.text(StoreDownloadSection.playStoreLabel), findsOneWidget);
-      expect(
-        find.text(
-          StoreDownloadSection.playStorePendingSubtitle,
-        ),
-        findsOneWidget,
-      );
-      expect(find.text(StoreDownloadSection.pendingLabel), findsOneWidget);
+      expect(find.text(StoreDownloadSection.pendingSubtitle), findsNothing);
+      expect(find.text(StoreDownloadSection.pendingLabel), findsNothing);
       expect(find.byType(TextFormField), findsNothing);
     });
 
-    testWidgets('activa App Store y deja Google Play pendiente', (
+    testWidgets('activa los enlaces de App Store y Google Play', (
       tester,
     ) async {
       await pumpLanding(tester);
@@ -66,7 +61,7 @@ void main() {
       );
 
       expect(appStore.onPressed, isNotNull);
-      expect(playStore.onPressed, isNull);
+      expect(playStore.onPressed, isNotNull);
     });
 
     testWidgets('abre la política de privacidad desde el footer', (
